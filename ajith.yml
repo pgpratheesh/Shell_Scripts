@@ -1,0 +1,66 @@
+---
+- hosts: dev
+  become: yes
+  vars:
+    cli_user: ""
+    cli_username: "" 
+    g_password: global@123
+    user: ""
+    
+  tasks:
+    - name: Fix 'support_tools' permissions
+      file: path=/etc/sudoers mode=0644
+      
+    - name: backup of sudoers file 
+      copy:
+        src: /etc/sudoers
+        dest: /etc/sudoers.bkp
+        validate: /usr/sbin/visudo -cf %s
+        
+    - name: Fix 'support_tools' permissions
+      file: path=/etc/sudoers mode=0440 
+    
+    - name: Create a login user
+      user:
+        name: "{{cli_user}}"
+        state: present
+        password: "{{g_password}}"
+        system: no
+       # group: wheel
+        comment: "{{cli_username}}"
+        shell: /bin/bash
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+         
+    - name: copy sudoers file backup to home directory for editting
+      copy:
+        src: /etc/sudoers.bkp
+        dest: "/home/{{cli_user}}/sudoers.edit"
+        validate: /usr/sbin/visudo -cf %s
+      
+#  - name: Allow 'wheel' group to have passwordless sudo
+#    lineinfile:
+#      dest: "/home/{{cli_user}}/sudoers.edit"
+#      state: present
+#      regexp: '^%wheel'
+#      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+#      validate: visudo -cf %s
+        
+    # name: Add a custom line to the end of the file inside deploy folder
+    
+    - stat: path=/home/{{user}}
+      register: user_exist
+      
+    - lineinfile:
+        dest: /home/ram/sudoers.edit
+        state: present
+        line: "{{cli_user}}    ALL=(ALL)   NOPASSWD: ALL"
+        insertafter: EOF 
+      
+    - name: Remove the user 'johnd'
+      user:
+        name: "{{user}}"
+        state: absent
+        remove: yes
+      when: user_exist.stat.exists == True
