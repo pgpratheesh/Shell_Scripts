@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: 172.31.18.200
   tasks:
   
  #   - name: Install Java 1.7
