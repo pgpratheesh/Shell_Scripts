@@ -19,9 +19,9 @@
     
     - name: Extract archive
       unarchive:
-        src: /opt/tom.zip
-        dest: /opt/apache-tomcat-7.0.61
-        remote_src: yes
+        src: /opt/apache-tomcat-7.0.61.tar.gz
+        dest: /opt
+        
     
     - name: Symlink install directory
       file: src=/opt/apache-tomcat-7.0.61 path=/usr/share/tomcat state=link
