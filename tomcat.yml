@@ -17,10 +17,11 @@
     - name: Download Tomcat
       get_url: url=http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.61/bin/apache-tomcat-7.0.61.tar.gz dest=/opt/apache-tomcat-7.0.61.tar.gz
     
-    #- name: Extract archive
-    #  unarchive:
-    #    src: /opt/apache-tomcat-7.0.61.tar.gz
-     #   dest: /opt/apache-tomcat-7.0.61
+    - name: Extract archive
+      unarchive:
+        src: /opt/apache-tomcat-7.0.61.tar.gz
+        dest: /opt/apache-tomcat-7.0.61
+        remote_src: yes
     
     - name: Symlink install directory
       file: src=/opt/apache-tomcat-7.0.61 path=/usr/share/tomcat state=link
