@@ -19,7 +19,7 @@
     
     - name: Extract archive
       unarchive:
-        src: /opt/apache-tomcat-7.0.61.tar.gz
+        src: /opt/tom.zip
         dest: /opt/apache-tomcat-7.0.61
         remote_src: yes
     
